@@ -2,14 +2,46 @@
 # -*- coding: utf-8 -*-
 """TikTok OSINT - جلب معلومات حساب تيك توك"""
 
-import requests, json
+import requests, json, os
 from datetime import datetime
 
 RED, YELLOW, GREEN, CYAN, RESET = '\033[1;31m','\033[1;33m','\033[1;32m','\033[1;36m','\033[0m'
 
+# ═══════════════════════════════════════════════════
+# 🔑 المفتاح يُقرأ من متغير البيئة أو يُدخل يدوياً
+# ═══════════════════════════════════════════════════
+def get_api_key():
+    """جلب مفتاح Firebase من متغير البيئة"""
+    # 1. جرّب من متغير البيئة
+    key = os.environ.get('TIKTOK_API_KEY')
+    if key:
+        return key
+    
+    # 2. جرّب من ملف config.ini (اختياري)
+    config_path = os.path.join(os.path.dirname(__file__), '..', 'config.ini')
+    if os.path.exists(config_path):
+        try:
+            with open(config_path, 'r') as f:
+                for line in f:
+                    if line.startswith('TIKTOK_API_KEY'):
+                        return line.split('=')[1].strip()
+        except:
+            pass
+    
+    # 3. اطلب من المستخدم
+    print(f"{YELLOW}⚠️  مفتاح API غير موجود في متغيرات البيئة{RESET}")
+    key = input(f"{CYAN}🔑 أدخل Firebase API Key (أو Enter لاستخدام الافتراضي): {RESET}").strip()
+    if not key:
+        # القيمة الافتراضية العامة (موجودة في تطبيقات كثيرة على الإنترنت)
+        key = "AIzaSyAZqmylIOE4fQmf0pemugc2iBH33rSeMkg"
+    return key
+
+
 def get_tiktok_info(username):
+    api_key = get_api_key()
+    
     ur = "https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser"
-    dat = {'key': "AIzaSyAZqmylIOE4fQmf0pemugc2iBH33rSeMkg"}
+    dat = {'key': api_key}
     dataa = json.dumps({"returnSecureToken": True})
     he = {
         'User-Agent': "okhttp/3.12.1",
