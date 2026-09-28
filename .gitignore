@@ -1,0 +1,27 @@
+__pycache__/
+*.py[cod]
+*.so
+.Python
+env/
+venv/
+ENV/
+
+.DS_Store
+*.log
+*.tmp
+
+# نتائج الفحص
+phone_*.json
+ip_*.json
+tiktok_*.json
+whisky_*.json
+dorks_*.txt
+leak_*.json
+batch_*.json
+report_*.json
+osint_*.json
+
+# مفاتيح
+config.ini
+.env
+secrets.py
